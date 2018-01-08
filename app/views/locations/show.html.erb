@@ -1,0 +1,51 @@
+<% @nearby_buses.each_with_index do |bus| %>
+
+<p>
+  <strong>Route:</strong><%= bus["ROUTE"]%></br>
+  <strong>Vehicle:</strong><%= bus["VEHICLE"]%></br>
+  <strong>Next Stop:</strong><%= bus["TIMEPOINT"]%></br>
+</p>
+
+<script>
+
+  function initialize() {
+    var myLatLng = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>);
+    var busLatLng = new google.maps.LatLng(<%= bus['LATITUDE'] %>, <%= bus['LONGITUDE']  %>);
+
+    var mapOptions = {
+      center: myLatLng,
+      zoom: 13
+    }
+
+    var map = new google.maps.Map(document.getElementById('map-canvas<%= index %>'), mapOptions);
+
+    var contentString = " A bus is here! ";
+
+    var infoWindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+
+    var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+      var marker = new google.maps.Marker({
+    position: busLatLng,
+    map: map,
+    animation: google.maps.animation.DROP,
+    title: "Your Bus",
+    icon: iconBase + 'bus.png'
+  });
+
+  google.maps.eventaddDomListener(marker, 'click', function(){
+    infoWindow.open(map,marker);
+  });
+}
+
+  google.maps.eventaddDomListener(window, 'load', initialize);
+
+</script>
+
+<div id= "map-canvas<%= index %>" style= "height: 200px; width: 200px;"></div>
+
+
+<% end %>
+
+<%= link_to "Actually, I'm at .....", edit_location_path(@location) %>
